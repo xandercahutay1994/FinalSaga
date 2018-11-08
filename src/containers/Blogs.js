@@ -7,15 +7,11 @@ import {
 import BlogLists from "../components/BlogLists"
 import BLogForm from "./BlogForm"
 import Navigation from "../components/Navigation"
-import Login from "./Login"
-import {
-    BrowserRouter as Router,
-    Link,
-    Route
-} from "react-router-dom"
 import Modal from "react-responsive-modal"
+import Char from "./Char";
 
-class Blogs extends Component{
+
+class Blogs extends React.PureComponent{
     
     constructor(){
         super()
@@ -26,20 +22,24 @@ class Blogs extends Component{
             body: '',
             id: 101,
             blogComments: [],
-            openModal: false
+            openModal: false,
+            goEdit: false,
+            message: 'hello'
         }
     }
 
     componentDidMount(){
         this._isMounted = true;
-        this.getBlogPost()
+
+        this.getBlogPost();
     }
 
     componentWillUnmount(){
         this._isMounted = false;
     }
     
-    async getBlogPost() {
+   
+    getBlogPost = async() => {
         try{
             const result = await axios(FETCH_POSTS_URL);
             const response = result.data;
@@ -56,7 +56,7 @@ class Blogs extends Component{
     }
 
     newBlogPost = (title,body) => {
-        this.state.allBlogPosts.unshift({id: this.state.id, title:title,body:body});
+        this.state.allBlogPosts.unshift({id:this.state.id,title:title,body:body});
 
         this.setState(prevState => ({
             title:title,
@@ -77,6 +77,8 @@ class Blogs extends Component{
     }
 
     renderModal = (blogComments) => {
+        const classStyleSpan = "form-control col-md-8";
+
         return (
             <Modal open={this.state.openModal} onClose={()=>this.closeModal()}>
                 {
@@ -84,15 +86,15 @@ class Blogs extends Component{
                         <div key={details.id} className="justify-content-center mt-3 p-2">
                             <div className="row">
                                 <h5 className="col-md-2"> Email </h5>
-                                <span className="form-control col-md-8">{details.email} </span>
+                                <span className={classStyleSpan}>{details.email} </span>
                             </div>
                             <div className="row mt-3">
                                 <h5 className="col-md-2"> Name </h5>
-                                <span className="form-control col-md-8">{details.name} </span>
+                                <span className={classStyleSpan}>{details.name} </span>
                             </div>
                             <div className="row mt-3">
                                 <h5 className="col-md-2"> Name </h5>
-                                <span className="form-control col-md-8">{details.body} </span>
+                                <span className={classStyleSpan}>{details.body} </span>
                             </div>
                             <hr/>
                         </div>
@@ -103,29 +105,44 @@ class Blogs extends Component{
         )
     }
 
+    renderBlogs = ({allBlogPosts,isFetching}) => {
+        return (
+            !isFetching ?
+                <h2 className="text-center">
+                    <i className="fa fa-circle-o-notch fa-spin"></i> Loading...
+                </h2> 
+            :
+                <BlogLists 
+                    blogLists={allBlogPosts}
+                    details={this.getComments}
+                    delete={this.handleDelete}
+                />
+        )
+    }
+
+    handleDelete = async(id) => {
+        const deleteBlogs =  this.state.allBlogPosts.filter(i => i.id != id )
+
+        this.setState({
+            allBlogPosts: deleteBlogs
+        })
+    }
+
     render(){
-        const { allBlogPosts, isFetching, blogComments } = this.state;
+        const { allBlogPosts, isFetching, blogComments, message } = this.state;
 
         return (
-            <div className="mt-5">
+            <div className="">
+                <Navigation />
                 <h1 className="mb-5 text-center text-primary"> Blog Posts </h1>
                 <BLogForm 
                     disableBtn={isFetching} 
                     addPost={this.newBlogPost}
+                    goToEdit={this.goToEdit}
                 />
                 <hr/>
-                {
-                    !isFetching ?
-                        <h2 className="text-center">
-                            <i className="fa fa-spinner"></i> Loading...
-                        </h2> 
-                    :
-                    <BlogLists 
-                        blogLists={allBlogPosts}
-                        details={this.getComments}
-                    />
-                }
-                {this.renderModal(blogComments)}
+                { this.renderBlogs({allBlogPosts,isFetching}) }
+                { this.renderModal(blogComments) }
             </div>
         )
     }

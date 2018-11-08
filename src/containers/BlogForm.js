@@ -28,7 +28,7 @@ class BlogForm extends Component{
     }
 
     render(){
-        const { disableBtn } = this.props;
+        const { disableBtn, goToEdit } = this.props;
         const { title, body } = this.state;
 
         return (
@@ -55,14 +55,14 @@ class BlogForm extends Component{
                                 <textarea 
                                     name="body" 
                                     className="form-control" 
-                                    placeholder="Enter Body Post"
+                                    placeholder="Enter Body"
                                     onChange={this.onChange}
                                     value={body}
                                     required
                                 ></textarea>
                             </label>
                         </div>
-                        <button className="btn btn-primary col-lg-6 col-md-6 mt-2" disabled={!disableBtn}>
+                        <button className="btn btn-primary col-lg-2 col-md-6 mt-2" disabled={!disableBtn}>
                             <i className="fa fa-plus"></i> Add Post
                         </button>
                     </form>

@@ -1,10 +1,11 @@
-import React, { Component } from "react"
-import CommentLists from "../components/CommentLists"
-import CommentFilter from "../components/CommentFilter"
+import React, { Component, PureComponent } from "react"
 import axios from "axios";
 import { FETCH_COMMENTS_URL } from "../api";
+import CommentLists from "../components/CommentLists"
+import Navigation from "../components/Navigation"
 
-class Comment extends Component {
+
+class Comment extends React.PureComponent {
 
     constructor(){
         super()
@@ -12,13 +13,16 @@ class Comment extends Component {
             allComments: [],
             isFetching: false,
             searchEmail: '',
-            filterComment: false
+            filterComment: false,
+            filterMatch: true,
+            num: 1
         }
     }
 
     componentDidMount(){
         this._isMounted = true
         this.getAllComments()
+
     }
 
     componentWillUnmount(){
@@ -26,9 +30,13 @@ class Comment extends Component {
     }
 
     onChange = (e) => {
-        this.setState({
-            searchEmail: e.target.value
-        })
+        
+        setTimeout(()=>{
+            this.setState({
+                searchEmail: e.target.value
+            })
+        },2000)
+        
     }
 
     getAllComments = async() => {
@@ -46,44 +54,31 @@ class Comment extends Component {
     
     submit = (e) => {
         e.preventDefault();
-        this.renderCommentDetail()
+        this.setState({ filterComment: true })
     }
 
-    renderCommentDetail = () => {
-        const {allComments,searchEmail} = this.state
-        let hasComment = false;
-        let tempComment = {};
-
-        allComments.filter(details => {
-            if(details.email === searchEmail){
-                hasComment = true;
-                Object.assign(tempComment, {details})
-            }
-        })
-
-        if(hasComment){
-            this.setState({ filterComment: true })
-        }
-
-        const { email, name, body} = tempComment.details;
-
+    renderComments = ({isFetching,allComments,searchEmail}) => {
         return (
-            <div>
-                <h5 className="text-primary"> { email } </h5>
-            </div>
+            !isFetching ?
+                <h2 className="text-center"><i className="fa fa-spinner fa-pulse"></i> Loading...</h2>
+            :
+                <CommentLists commentLists={allComments} email={searchEmail}/>
+
         )
     }
 
     render(){
-        const { allComments, isFetching, searchEmail, filterComment } = this.state;
-
+        const { searchEmail } = this.state;
+        console.log('Render Comment')
         return(
             <div className="container mt-5">
+               <Navigation />
                 <h1 className="text-center"> All Comments </h1>
                 <form onSubmit={this.submit} className="mt-5">
                     <input
                         name="searchEmail"
                         className="form-control"
+                        placeholder="Enter Email"
                         onChange={this.onChange}
                         value={searchEmail}
                         required
@@ -94,19 +89,7 @@ class Comment extends Component {
                 </form>
 
                 <div className="mt-5">
-                    {
-                        !isFetching ?
-                            <h2 className="text-center"><i className="fa fa-spinner"></i> Loading...</h2>
-                        :
-                            !filterComment ?
-                                <CommentLists commentLists={allComments}/>
-                            :
-
-                                <CommentFilter commentFilter={allComments} email={searchEmail}/>
-
-                            // <CommentLists commentLists={allComments}/>
-                    } 
-
+                    { this.renderComments({...this.state})}
                 </div>
             </div>
         )

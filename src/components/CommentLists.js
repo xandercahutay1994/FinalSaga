@@ -1,12 +1,23 @@
-import React from "react"
+import Template from "./Template";
 
 const CommentLists = props => {
-    return props.commentLists.map(lists => 
-        <div key={ lists.id }>
-            <h5 className="text-primary">{ lists.email }</h5>
-            <p>{ lists.body }</p> 
-        </div>  
-    )
+    let filterMatch = false;
+    let specComment = {};
+
+    const comment = props.commentLists.map(lists => {
+        if(props.email != lists.email)
+        {
+            return Template({details: lists })
+        }else{
+            filterMatch = true
+            specComment = {...lists} 
+        }
+    })
+
+    if(!filterMatch)
+        return comment
+    else
+        return Template({details: specComment})
 }
 
 export default CommentLists;

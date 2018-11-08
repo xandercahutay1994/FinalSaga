@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build",
-    "build": "webpack -d && webpack-dev-server --mode development --open --hot --history-api-fallback",
+    "build": "webpack -d && webpack-dev-server --mode development --content-base src --open --hot --history-api-fallback",
     "build:prod": "webpack -p && cp src/index.html dist/index.html"
   },
   "author": "",
