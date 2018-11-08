@@ -55,13 +55,13 @@ class App extends React.PureComponent{
         return(
             <Router>
                 <div className="container">
-                    {/* {
+                    {
                         !isAuthenticated ?
                             <Login getUser={this.checkIfUser} isUser={isUser}/>
                         :
                             <Routes />
-                    } */}
-                    <Blogs />
+                    }
+                    {/* <Blogs /> */}
                 </div>
             </Router>
         )
