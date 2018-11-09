@@ -1,11 +1,11 @@
-import React, { Component, PureComponent } from "react"
+import React, { Component } from "react"
 import axios from "axios";
 import { FETCH_COMMENTS_URL } from "../api";
 import CommentLists from "../components/CommentLists"
 import Navigation from "../components/Navigation"
 
 
-class Comment extends React.PureComponent {
+class Comment extends Component {
 
     constructor(){
         super()
@@ -14,15 +14,13 @@ class Comment extends React.PureComponent {
             isFetching: false,
             searchEmail: '',
             filterComment: false,
-            filterMatch: true,
-            num: 1
+            filterMatch: true
         }
     }
 
     componentDidMount(){
         this._isMounted = true
         this.getAllComments()
-
     }
 
     componentWillUnmount(){
@@ -30,13 +28,9 @@ class Comment extends React.PureComponent {
     }
 
     onChange = (e) => {
-        
-        setTimeout(()=>{
-            this.setState({
-                searchEmail: e.target.value
-            })
-        },2000)
-        
+        this.setState({
+            searchEmail: e.target.value
+        }) 
     }
 
     getAllComments = async() => {
@@ -60,18 +54,17 @@ class Comment extends React.PureComponent {
     renderComments = ({isFetching,allComments,searchEmail}) => {
         return (
             !isFetching ?
-                <h2 className="text-center"><i className="fa fa-spinner fa-pulse"></i> Loading...</h2>
+                <h2 className="text-center"><i className="fa fa-circle-o-notch fa-spin"></i> Loading...</h2>
             :
                 <CommentLists commentLists={allComments} email={searchEmail}/>
-
         )
     }
 
     render(){
-        const { searchEmail } = this.state;
-        console.log('Render Comment')
+        const { searchEmail, isFetching } = this.state;
+
         return(
-            <div className="container mt-5">
+            <div>
                <Navigation />
                 <h1 className="text-center"> All Comments </h1>
                 <form onSubmit={this.submit} className="mt-5">
@@ -83,7 +76,7 @@ class Comment extends React.PureComponent {
                         value={searchEmail}
                         required
                     />
-                    <button className="btn btn-primary m-2">
+                    <button className="btn btn-primary m-2" disabled={!isFetching}>
                         Search
                     </button>
                 </form>

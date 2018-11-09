@@ -1,18 +1,17 @@
-import React, {Component} from "react"
+import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 class Login extends Component{
-   
-    constructor(props){
-        super(props)
+    constructor(){
+        super()
         this.state = {
             username: '',
             email: '',
-            isAuthenticated: false
         }
     }
 
     onChange = (e) => {
-        const { name,value } = e.target;
+        const { name, value } = e.target;
 
         this.setState({
             [name]: value
@@ -26,14 +25,15 @@ class Login extends Component{
         this.props.getUser(username,email)
     }
 
-    notAUser(){
-        return <div> <h3> Email/Username is incorrect! </h3></div>
+    notAuthenticated = () => {
+        if(this.props.isNotAuthenticated){
+            return <h5 className="text-center text-danger"> Email/Username is incorrect! </h5>
+        }
     }
 
     render(){
         const { username, email } = this.state; 
-        const { isUser } = this.props;
-        
+
         return(
             <div className="container mt-5 col-lg-6">
                 <h1 className="text-center"> Login </h1>
@@ -65,16 +65,20 @@ class Login extends Component{
                                 />
                             </label>
                         </div>
-
+                        { this.notAuthenticated() }
                         <button className="btn btn-primary btn-block mt-2">
                             <i className="fa fa-sign-in"></i>  Login 
                         </button>
-
                     </form>
                 </div>
             </div>
         )
     }
 }
+
+Login.propTypes = {
+    getUser: PropTypes.func.isRequired
+}
+
 
 export default Login;

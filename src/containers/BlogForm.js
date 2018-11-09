@@ -1,7 +1,8 @@
-import React, {Component} from "react"
+import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 class BlogForm extends Component{
-    constructor(props){
+    constructor(){
         super()
         this.state = {
             title: '',
@@ -10,9 +11,11 @@ class BlogForm extends Component{
     }
 
     onChange = (e) => {
+        const {name, value} = e.target
         this.setState({
-            [e.target.name]: e.target.value 
+            [name]: value
         })
+       
     }
     
     submit = (e) => {
@@ -28,7 +31,7 @@ class BlogForm extends Component{
     }
 
     render(){
-        const { disableBtn, goToEdit } = this.props;
+        const { disableBtn } = this.props;
         const { title, body } = this.state;
 
         return (
@@ -71,5 +74,11 @@ class BlogForm extends Component{
         )
     }
 }
+
+BlogForm.propTypes = {
+    disableBtn: PropTypes.bool.isRequired,
+    addPost: PropTypes.func.isRequired
+}
+
 
 export default BlogForm;

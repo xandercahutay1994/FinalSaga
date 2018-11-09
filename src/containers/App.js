@@ -1,22 +1,17 @@
 import React, {Component} from "react";
 import axios from "axios"
-import { FETCH_USERS_URL } from "../api"
-import Login from "./Login";
-import Blogs from "./Blogs";
-import Comment from "./Comment";
 import {
-    BrowserRouter as Router,
-    Link,
-    Route
+    BrowserRouter as Router
 } from "react-router-dom"
 import Routes from "../Routes"
+import { FETCH_USERS_URL } from "../api"
+import Login from "./Login";
 
-class App extends React.PureComponent{
+class App extends Component{
     constructor(){
         super()
         this.state = {
-            isAuthenticated: false,
-            isUser: ''
+            isAuthenticated: false
         }
     }
 
@@ -27,8 +22,9 @@ class App extends React.PureComponent{
             const result = await axios.get(FETCH_USERS_URL);
             let users = result.data;
 
+            // users.map(user => {
             for(let user of users){
-                // if(user.username == username && user.email == email)
+                // if(user.username === username && user.email === email)
                 if(username == "admin" && email == "admin")
                     isMatch = true
             }
@@ -40,28 +36,29 @@ class App extends React.PureComponent{
             this.setState({
                 username: '',
                 email: '',
-                isAuthenticated: true,
-                isUser: true
+                isAuthenticated: true
             })
         }else{
-            this.setState({ isUser: false })
-
+            this.setState({ isAuthenticated: false })
         }
     }
 
-    render(){
-        const { isAuthenticated, isUser } = this.state;
+    renderContent = () => {
+        const { isAuthenticated } = this.state;
 
+        return(
+            !isAuthenticated ?
+                <Login getUser={this.checkIfUser} isNotAuthenticated={!isAuthenticated}/>
+            :
+                <Routes/>
+        )
+    }
+
+    render(){
         return(
             <Router>
                 <div className="container">
-                    {
-                        !isAuthenticated ?
-                            <Login getUser={this.checkIfUser} isUser={isUser}/>
-                        :
-                            <Routes />
-                    }
-                    {/* <Blogs /> */}
+                    { this.renderContent() }
                 </div>
             </Router>
         )

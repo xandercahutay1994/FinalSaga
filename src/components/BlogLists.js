@@ -1,7 +1,7 @@
-import React from "react"
+import React from "react";
+import PropTypes from "prop-types";
 
-const BlogLists = props => {
-
+const BlogLists = props => {    
     return props.blogLists.map(lists => 
         <div key={ lists.id }>
             { lists.id }
@@ -10,6 +10,12 @@ const BlogLists = props => {
             <p>{ lists.body }</p>
         </div>  
     )
+}
+
+BlogLists.propTypes = {
+    blogLists: PropTypes.array.isRequired,
+    details: PropTypes.func.isRequired,
+    delete: PropTypes.func.isRequired
 }
 
 export default BlogLists;
