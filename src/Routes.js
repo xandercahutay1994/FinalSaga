@@ -3,13 +3,13 @@ import {
     Route
 } from "react-router-dom"
 import Blogs from "./containers/Blogs";
-import Comment from "./containers/Comment";
+import Comments from "./containers/Comments";
 
 const Routes = () => {
     return (
         <div>
             <Route path="/" component={Blogs} exact/>
-            <Route path="/comment" component={Comment} />
+            <Route path="/comment" component={Comments} />
         </div>
     )
 }

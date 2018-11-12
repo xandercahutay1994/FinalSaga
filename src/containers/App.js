@@ -6,6 +6,8 @@ import {
 import Routes from "../Routes"
 import { FETCH_USERS_URL } from "../api"
 import Login from "./Login";
+import Blogs from "./Blogs";
+import Comments from "./Comments";
 
 class App extends Component{
     constructor(){
@@ -18,20 +20,15 @@ class App extends Component{
     checkIfUser = async(username,email) => {
         let isMatch = false;
 
-        try{
-            const result = await axios.get(FETCH_USERS_URL);
-            let users = result.data;
+        const result = await axios.get(FETCH_USERS_URL);
+        let users = result.data;
 
-            // users.map(user => {
-            for(let user of users){
-                // if(user.username === username && user.email === email)
-                if(username == "admin" && email == "admin")
-                    isMatch = true
-            }
-        }catch(e){
-            console.log(e)
+        // users.map(user => {
+        for(let user of users){
+            // if(user.username === username && user.email === email)
+            if(username == "admin" && email == "admin")
+                isMatch = true
         }
-
         if(isMatch){
             this.setState({
                 username: '',
@@ -47,10 +44,13 @@ class App extends Component{
         const { isAuthenticated } = this.state;
 
         return(
-            !isAuthenticated ?
-                <Login getUser={this.checkIfUser} isNotAuthenticated={!isAuthenticated}/>
-            :
-                <Routes/>
+            // !isAuthenticated ?
+            //     <Login getUser={this.checkIfUser} isNotAuthenticated={!isAuthenticated}/>
+            // :
+            //     <Routes/>
+            <Blogs />
+            
+            // <Comments />
         )
     }
 

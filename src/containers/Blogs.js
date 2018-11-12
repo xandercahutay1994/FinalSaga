@@ -8,85 +8,60 @@ import BlogLists from "../components/BlogLists";
 import BLogForm from "./BlogForm";
 import Navigation from "../components/Navigation";
 import Modal from "react-responsive-modal";
+import { connect } from "react-redux";
+import {
+    FETCH_BLOGS_ACTION,
+    FETCH_COMMENTS_FOR_BLOGS_ACTION,
+    DELETE_BLOG_ACTION
+} from "../redux/action/blogs"
 
 class Blogs extends Component{
     
     constructor(){
         super()
         this.state = {
-            isFetching: false,
             title: '',
             body: '',
             id: 101,
-            blogComments: [],
             openModal: false
         }
     }
 
     componentDidMount(){
-        this._isMounted = true;
-
-        // if(this._isMounted){
-            this.getBlogPost();
-        // }
-    }
-
-    componentWillUnmount(){
-        this._isMounted = false;
-    }
-   
-    getBlogPost = async() => {
-        try{
-            const result = await axios(FETCH_POSTS_URL);
-            const response = result.data;
-            
-            if(this._isMounted){
-                this.setState({
-                    allBlogPosts: response,
-                    isFetching: true
-                })
-            }
-        }catch(e){
-            console.log(e)
-        }
-    }
-
-    newBlogPost = (title,body) => {
-        // this.state.allBlogPosts.unshift({id:this.state.id,title:title,body:body});
-        // const test = [{ a: 1, b: 2}]
-        // const shallow = [...test]
-        // shallow[0].a = 2
-        
-        const {allBlogPosts} = this.state
-        const blogPosts = [{id:this.state.id,title:title,body:body}, ...allBlogPosts]
-        this.setState(prevState => ({
-            allBlogPosts: blogPosts,
-            title: title,
-            body: body,
-            id: prevState.id + 1
-        }))
-      
-    }
-
-    getComments = async(id) => {
-        try{
-            const result = await axios(FETCH_SPEC_COMMENT_URL + id);
-            const response = result.data;
-            this.setState({ blogComments: response, openModal: true })
-        }catch(e){
-            console.log(e)
-        }
+        this.props.fetchBlogsAPI()
     }
 
     closeModal = () => {
         this.setState({ openModal: false })
     }
 
+    renderBlogs = (allBlogs, isFetching) => {
+        const { fetchCommentsForBlogsAPI } = this.props
+        return (
+            isFetching ?
+                <h2 className="text-center">
+                    <i className="fa fa-circle-o-notch fa-spin"></i> Loading...
+                </h2> 
+            :
+                <BlogLists 
+                    blogLists={allBlogs}
+                    details={fetchCommentsForBlogsAPI}
+                    delete={this.handleDelete}
+                />
+        )
+    }
+
+    handleDelete = id => {
+        const { allBlogs, deleteBlogHandler } = this.props
+        const newBlog =  allBlogs.filter(i => i.id !== id )
+        deleteBlogHandler(newBlog)
+    }
+
     renderModal = (blogComments) => {
         const classStyleSpan = "form-control col-md-8";
 
         return (
-            <Modal open={this.state.openModal} onClose={()=>this.closeModal()}>
+            <Modal open={this.props.openModal} onClose={()=>this.closeModal()}>
                 {
                     blogComments.map(details => 
 
@@ -111,49 +86,48 @@ class Blogs extends Component{
             </Modal>
         )
     }
+    
+    newBlogPost = () => {
 
-    renderBlogs = ({allBlogPosts,isFetching}) => {
-
-        return (
-            !isFetching ?
-                <h2 className="text-center">
-                    <i className="fa fa-circle-o-notch fa-spin"></i> Loading...
-                </h2> 
-            :
-                <BlogLists 
-                    blogLists={allBlogPosts}
-                    details={this.getComments}
-                    delete={this.handleDelete}
-                />
-        )
-    }
-
-    handleDelete = id => {
-        const deleteBlogs =  this.state.allBlogPosts.filter(i => i.id != id )
-
-        this.setState({
-            allBlogPosts: deleteBlogs
-        })
     }
 
     render(){
-        const { allBlogPosts, isFetching, blogComments } = this.state;
+        const { allBlogs, isFetching, blogComments } = this.props;
 
         return (
             <div>
                 <Navigation />
 
                 <h1 className="mb-5 text-center text-primary"> Blog Posts </h1>
-                <BLogForm 
-                    disableBtn={isFetching} 
-                    addPost={this.newBlogPost}
-                />
-                <hr/>
-                { this.renderBlogs({allBlogPosts,isFetching}) }
+                <BLogForm />
+                { this.renderBlogs(allBlogs,isFetching)}
                 { this.renderModal(blogComments) }
             </div>
         )
     }
 }
 
-export default Blogs;
+const mapStateToProps = state => {
+    return {
+        allBlogs: state.blogs.allBlogs,
+        isFetching: state.blogs.isFetching,
+        blogComments: state.blogs.commentsForBlogs,
+        openModal: state.blogs.openModal
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchBlogsAPI: () => {
+            dispatch(FETCH_BLOGS_ACTION())
+        },
+        fetchCommentsForBlogsAPI: (postId) => {
+            dispatch(FETCH_COMMENTS_FOR_BLOGS_ACTION(postId))
+        },
+        deleteBlogHandler: (newBlog) => {
+            dispatch(DELETE_BLOG_ACTION(newBlog))
+        }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Blogs);

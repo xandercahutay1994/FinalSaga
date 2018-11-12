@@ -1,5 +1,10 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
+import { 
+    ADD_BLOGPOST_ACTION
+} from "../redux/action/blogs"
+import { connect } from "react-redux";
+
 
 class BlogForm extends Component{
     constructor(){
@@ -15,15 +20,17 @@ class BlogForm extends Component{
         this.setState({
             [name]: value
         })
-       
     }
     
     submit = (e) => {
         e.preventDefault();
         const { title, body } = this.state;
-
-        this.props.addPost(title,body)
-        
+        const postBlogData = {
+            id: this.props.id,
+            title,
+            body
+        }
+        this.props.addBlog(postBlogData)
         this.setState({
             title: '',
             body: ''
@@ -31,7 +38,6 @@ class BlogForm extends Component{
     }
 
     render(){
-        const { disableBtn } = this.props;
         const { title, body } = this.state;
 
         return (
@@ -65,7 +71,7 @@ class BlogForm extends Component{
                                 ></textarea>
                             </label>
                         </div>
-                        <button className="btn btn-primary col-lg-2 col-md-6 mt-2" disabled={!disableBtn}>
+                        <button className="btn btn-primary col-lg-2 col-md-6 mt-2">
                             <i className="fa fa-plus"></i> Add Post
                         </button>
                     </form>
@@ -76,9 +82,21 @@ class BlogForm extends Component{
 }
 
 BlogForm.propTypes = {
-    disableBtn: PropTypes.bool.isRequired,
-    addPost: PropTypes.func.isRequired
+    // addPost: PropTypes.func.isRequired
 }
 
+const mapStateToProps = state => {
+    return {
+        id: state.blogs.id,
+    }
+}
 
-export default BlogForm;
+const mapDispatchToProps = dispatch => {
+    return {
+        addBlog: (data) => {
+            dispatch(ADD_BLOGPOST_ACTION(data))
+        }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(BlogForm);

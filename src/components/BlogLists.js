@@ -12,10 +12,10 @@ const BlogLists = props => {
     )
 }
 
-BlogLists.propTypes = {
-    blogLists: PropTypes.array.isRequired,
-    details: PropTypes.func.isRequired,
-    delete: PropTypes.func.isRequired
-}
+// BlogLists.propTypes = {
+//     blogLists: PropTypes.array.isRequired,
+//     details: PropTypes.func.isRequired,
+//     delete: PropTypes.func.isRequired
+// }
 
 export default BlogLists;

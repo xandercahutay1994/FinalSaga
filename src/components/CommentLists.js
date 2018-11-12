@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const CommentLists = props => {
     let filterMatch = false;
     let specComment = {};
-    
+
     const comment = props.commentLists.map(lists => {
         if(props.email != lists.email)
         {
