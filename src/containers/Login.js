@@ -1,17 +1,21 @@
-import React, {Component} from "react";
-import PropTypes from "prop-types";
+import React, {PureComponent} from "react"
+import { connect } from "react-redux"
+import {
+    LOGIN_USER_ACTION
+} from "../redux/actions/users"
 
-class Login extends Component{
-    constructor(){
-        super()
+class Login extends PureComponent{
+   
+    constructor(props){
+        super(props)
         this.state = {
             username: '',
-            email: '',
+            email: ''
         }
     }
 
     onChange = (e) => {
-        const { name, value } = e.target;
+        const { name,value } = e.target;
 
         this.setState({
             [name]: value
@@ -21,19 +25,23 @@ class Login extends Component{
     submit = (e) => {
         e.preventDefault();
         const { username, email } = this.state;
-
-        this.props.getUser(username,email)
+        const userData = {
+            username,
+            email
+        }
+        this.props.loginUser(userData)
     }
 
-    notAuthenticated = () => {
-        if(this.props.isNotAuthenticated){
+    notAUser(){
+        if(this.props.isAuthenticated === false){
             return <h5 className="text-center text-danger"> Email/Username is incorrect! </h5>
         }
     }
 
     render(){
         const { username, email } = this.state; 
-
+        const { isUser } = this.props;
+        
         return(
             <div className="container mt-5 col-lg-6">
                 <h1 className="text-center"> Login </h1>
@@ -65,10 +73,11 @@ class Login extends Component{
                                 />
                             </label>
                         </div>
-                        { this.notAuthenticated() }
+                        {this.notAUser()}
                         <button className="btn btn-primary btn-block mt-2">
                             <i className="fa fa-sign-in"></i>  Login 
                         </button>
+
                     </form>
                 </div>
             </div>
@@ -76,9 +85,18 @@ class Login extends Component{
     }
 }
 
-Login.propTypes = {
-    getUser: PropTypes.func.isRequired
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.users.isAuthenticated
+    }
 }
 
+const mapDispatchToProps = dispatch => {
+    return {
+        loginUser: (userData) => {
+            dispatch(LOGIN_USER_ACTION(userData))
+        }
+    }
+}
 
-export default Login;
+export default connect(mapStateToProps,mapDispatchToProps)(Login);

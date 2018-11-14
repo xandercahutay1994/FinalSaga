@@ -1,12 +1,12 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import PropTypes from "prop-types";
 import { 
     ADD_BLOGPOST_ACTION
-} from "../redux/action/blogs"
+} from "../redux/actions/blogs"
 import { connect } from "react-redux";
 
 
-class BlogForm extends Component{
+class BlogForm extends PureComponent{
     constructor(){
         super()
         this.state = {
@@ -33,12 +33,13 @@ class BlogForm extends Component{
         this.props.addBlog(postBlogData)
         this.setState({
             title: '',
-            body: ''
+            body: '',
+            isSubmit: false
         })
     }
 
     render(){
-        const { title, body } = this.state;
+        const { title, body, isSubmit } = this.state;
 
         return (
             <div className="mt-5 col-lg-12">
@@ -71,7 +72,7 @@ class BlogForm extends Component{
                                 ></textarea>
                             </label>
                         </div>
-                        <button className="btn btn-primary col-lg-2 col-md-6 mt-2">
+                        <button className="btn btn-primary col-lg-2 col-md-2 col-sm-4 mt-2">
                             <i className="fa fa-plus"></i> Add Post
                         </button>
                     </form>
@@ -82,12 +83,14 @@ class BlogForm extends Component{
 }
 
 BlogForm.propTypes = {
-    // addPost: PropTypes.func.isRequired
+    addBlog: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => {
+    const {id, allBlogs} = state.blogs
     return {
-        id: state.blogs.id,
+        id,
+        allBlogs
     }
 }
 

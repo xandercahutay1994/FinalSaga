@@ -14,7 +14,7 @@ const blogState = {
     openModal: false
 }
 
-const blogReducer = (state = blogState, action) => {
+const blogsReducer = (state = blogState, action) => {
     switch(action.type){
         case RECEIVE_BLOGS_REDUCER:
             return {
@@ -31,7 +31,7 @@ const blogReducer = (state = blogState, action) => {
         case DELETE_BLOG_REDUCER:
             return {
                 ...state,
-                allBlogs: [state.allBlogs, action.payload],
+                allBlogs: [...action.payload],
             }
         case ADD_BLOGPOST_REDUCER:
             return{
@@ -45,4 +45,4 @@ const blogReducer = (state = blogState, action) => {
     return state;
 }
 
-export default blogReducer;
+export default blogsReducer;

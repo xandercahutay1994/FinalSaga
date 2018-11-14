@@ -1,58 +1,46 @@
 import React, { PureComponent } from "react"
-import axios from "axios";
-import { FETCH_COMMENTS_URL } from "../api";
 import CommentLists from "../components/CommentLists"
 import Navigation from "../components/Navigation"
 import { connect } from "react-redux"
+import { FETCH_COMMENTS_ACTION } from "../redux/actions/comments"
 
-class Comments extends PureComponent {
-
+class Comment extends PureComponent {
     constructor(){
         super()
         this.state = {
-            isFetching: false,
-            searchEmail: '',
-            filterComment: false,
-            filterMatch: true
+            searchEmail: ''
         }
     }
 
     componentDidMount(){
-        this.getAllCommentsFromAPI()
-    }
-
-    getAllCommentsFromAPI = async() => {
-        const result = await axios(FETCH_COMMENTS_URL)
-        const comments = result.data;
-        this.props.fetchComments(comments);
+        this.props.fetchCommentsFromAPI()
     }
 
     onChange = (e) => {
         this.setState({
             searchEmail: e.target.value
-        }) 
-    }
-    
-    submit = (e) => {
-        e.preventDefault();
-        // this.setState({ filterComment: true })
+        })
     }
 
-    renderComments = (allComments,searchEmail) => {
-        return (
-            <CommentLists commentLists={allComments} email={searchEmail}/>
+    renderCommentLists = () => {
+        const { isFetching, allComments, filterComment } = this.props;
+        const { searchEmail } = this.state
+        
+        return(
+            isFetching ?
+                <h2 className="text-center"><i className="fa fa-spinner"></i> Loading...</h2>
+            :   
+                <CommentLists commentLists={allComments} email={searchEmail}/>
         )
     }
-
+ 
     render(){
-        const { searchEmail, isFetching } = this.state;
-        const { allComments } = this.props;
-
+        const { searchEmail } = this.state;
         return(
             <div>
-               <Navigation />
+                <Navigation />
                 <h1 className="text-center"> All Comments </h1>
-                <form onSubmit={this.submit} className="mt-5">
+                <div className="mt-5">
                     <input
                         name="searchEmail"
                         className="form-control"
@@ -61,33 +49,32 @@ class Comments extends PureComponent {
                         value={searchEmail}
                         required
                     />
-                    <button className="btn btn-primary m-2" disabled={!isFetching}>
-                        Search
-                    </button>
-                </form>
-
+                </div>
                 <div className="mt-5">
-                    { this.renderComments(allComments,searchEmail)}
+                    { this.renderCommentLists() }
                 </div>
             </div>
         )
     }
 }
 
+
 const mapStateToProps = state => {
+    const { allComments, isFetching, filterComment } = state.comments
     return {
-        allComments: state.comments.allComments
+        allComments,
+        isFetching,
+        filterComment
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchComments: (comments) => dispatch({
-            type: "FETCH_COMMENTS_REDUCER",
-            payload: comments
-        })
-    }
+        fetchCommentsFromAPI: () => {
+            dispatch(FETCH_COMMENTS_ACTION())
+        }
+    } 
 }
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(Comments);
+export default connect(mapStateToProps,mapDispatchToProps)(Comment)

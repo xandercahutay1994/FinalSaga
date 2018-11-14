@@ -1,6 +1,6 @@
 import React from "react";
 
-const Template = ({details}) => {
+const CommentListsFilterTemplate = ({details}) => {
     const { id, email, body } = details
     return(
         <div key={ id }>
@@ -10,4 +10,4 @@ const Template = ({details}) => {
     ) 
 }
 
-export default Template;
+export default CommentListsFilterTemplate;

@@ -2,7 +2,8 @@ import {
     FETCH_BLOGS_TYPE,
     FETCH_COMMENTS_FOR_BLOGS_TYPE,
     DELETE_BLOG_TYPE,
-    ADD_BLOGPOST_TYPE
+    ADD_BLOGPOST_TYPE,
+    ADD_BLOGPOST_REDUCER
 } from "../types"
 
 export function FETCH_BLOGS_ACTION(){
@@ -28,7 +29,7 @@ export function DELETE_BLOG_ACTION(newBlog){
  
 export function ADD_BLOGPOST_ACTION(data){
     return  {
-        type: ADD_BLOGPOST_TYPE,
+        type: ADD_BLOGPOST_REDUCER,
         payload: data
     }
 }

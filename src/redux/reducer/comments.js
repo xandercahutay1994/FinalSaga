@@ -6,7 +6,7 @@ const commentState = {
     allComments: []
 }
 
-const commentReducer = (state = commentState, action) => {
+const commentReducers = (state = commentState, action) => {
     switch(action.type){
         case FETCH_COMMENTS_REDUCER:
             return {
@@ -19,4 +19,4 @@ const commentReducer = (state = commentState, action) => {
     return state;
 }
 
-export default commentReducer;
+export default commentReducers;

@@ -1,9 +1,4 @@
-import React, { Component } from "react";
-import axios from "axios";
-import { 
-    FETCH_POSTS_URL,
-    FETCH_SPEC_COMMENT_URL 
-} from "../api";
+import React, { PureComponent } from "react";
 import BlogLists from "../components/BlogLists";
 import BLogForm from "./BlogForm";
 import Navigation from "../components/Navigation";
@@ -13,17 +8,15 @@ import {
     FETCH_BLOGS_ACTION,
     FETCH_COMMENTS_FOR_BLOGS_ACTION,
     DELETE_BLOG_ACTION
-} from "../redux/action/blogs"
+} from "../redux/actions/blogs"
 
-class Blogs extends Component{
+class Blogs extends PureComponent{
     
     constructor(){
         super()
         this.state = {
             title: '',
-            body: '',
-            id: 101,
-            openModal: false
+            body: ''
         }
     }
 
@@ -59,7 +52,7 @@ class Blogs extends Component{
 
     renderModal = (blogComments) => {
         const classStyleSpan = "form-control col-md-8";
-
+      
         return (
             <Modal open={this.props.openModal} onClose={()=>this.closeModal()}>
                 {
@@ -86,20 +79,14 @@ class Blogs extends Component{
             </Modal>
         )
     }
-    
-    newBlogPost = () => {
-
-    }
 
     render(){
         const { allBlogs, isFetching, blogComments } = this.props;
-
         return (
             <div>
                 <Navigation />
-
                 <h1 className="mb-5 text-center text-primary"> Blog Posts </h1>
-                <BLogForm />
+                <BLogForm/>
                 { this.renderBlogs(allBlogs,isFetching)}
                 { this.renderModal(blogComments) }
             </div>
@@ -108,11 +95,12 @@ class Blogs extends Component{
 }
 
 const mapStateToProps = state => {
+    const { allBlogs, isFetching, commentsForBlogs, openModal } = state.blogs
     return {
-        allBlogs: state.blogs.allBlogs,
-        isFetching: state.blogs.isFetching,
-        blogComments: state.blogs.commentsForBlogs,
-        openModal: state.blogs.openModal
+        allBlogs,
+        isFetching,
+        blogComments: commentsForBlogs,
+        openModal
     }
 }
 
@@ -122,7 +110,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(FETCH_BLOGS_ACTION())
         },
         fetchCommentsForBlogsAPI: (postId) => {
-            dispatch(FETCH_COMMENTS_FOR_BLOGS_ACTION(postId))
+            return dispatch(FETCH_COMMENTS_FOR_BLOGS_ACTION(postId))
         },
         deleteBlogHandler: (newBlog) => {
             dispatch(DELETE_BLOG_ACTION(newBlog))

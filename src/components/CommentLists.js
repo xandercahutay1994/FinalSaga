@@ -1,24 +1,15 @@
-import Template from "./Template";
+import CommentListsFilterTemplate from "./CommentListsFilterTemplate";
 import PropTypes from "prop-types";
 
 const CommentLists = props => {
-    let filterMatch = false;
-    let specComment = {};
+    const { commentLists, email } = props
+    
+    return (email ? commentLists.filter(lists => lists.email === email ) : commentLists).map(details => CommentListsFilterTemplate({details}))
 
-    const comment = props.commentLists.map(lists => {
-        if(props.email != lists.email)
-        {
-            return Template({details: lists })
-        }else{
-            filterMatch = true
-            specComment = {...lists} 
-        }
-    })
-
-    if(!filterMatch)
-        return comment
-    else
-        return Template({details: specComment})
+    // if(email)
+    //     return commentLists.filter(lists => lists.email === email  ).map(details => CommentListsFilterTemplate({details}))
+    // else
+    //     return commentLists.map(res => CommentListsFilterTemplate({details: res}))
 }
 
 CommentLists.propTypes = {

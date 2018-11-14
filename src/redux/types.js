@@ -16,12 +16,26 @@ export const RECEIVE_BLOGS_TYPE = "RECEIVE_BLOGS_TYPE"
 export const FETCH_COMMENTS_FOR_BLOGS_TYPE = "FETCH_COMMENTS_FOR_BLOGS_TYPE"
 export const DELETE_BLOG_TYPE = "DELETE_BLOG_TYPE"
 export const ADD_BLOGPOST_TYPE = "ADD_BLOGPOST_TYPE"
+
+//=============================================================================================
 /*
     COMMENTS 
 */
-
 //REDUCER
 export const FETCH_COMMENTS_REDUCER = "FETCH_COMMENTS_REDUCER"
 
 //TYPES
 export const FETCH_COMMENTS_TYPE= "FETCH_COMMENTS_TYPE"
+
+
+//=============================================================================================
+/*
+    USERS 
+*/
+//REDUCER
+export const LOGIN_USERS_REDUCER = "LOGIN_USERS_REDUCER" 
+export const LOGIN_SUCCESS_REDUCER = "LOGIN_SUCCESS_REDUCER" 
+export const LOGIN_FAILED_REDUCER = "LOGIN_FAILED_REDUCER" 
+
+//TYPES
+export const LOGIN_USERS_TYPE = "LOGIN_USERS_TYPE"
